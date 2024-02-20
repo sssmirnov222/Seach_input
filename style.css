@@ -37,7 +37,8 @@ input {
 
 .user_autocomplite_list{
     list-style: none;
-    
+   
+    border: 2px solid black;
 }
 
 .user_autocomplite_button  {
@@ -56,19 +57,31 @@ input {
     background: #E27BEB;
     color: white;
     width: 25%;
+}
+
+.divFlex {
     display: flex;
-    flex-direction: column;
-    /* display: none; */
+    justify-content: space-between;
+    border:  2px solid black;
+}
+
+.divFlex button {
+    padding-right: 15px;
 }
 
 .userComplete  {
-    border-left: 2px solid black;
-    border-right: 2px solid black;
-    border-bottom: 2px;
     background: #E27BEB;
     font-size: 24px;
     color: black;
     /* padding: 6px; */
     padding: 2px 10px;
     font-family: Roboco;
+}
+
+
+.buttonExit {
+    /* border: 2px 2px 2px 0px solid black; */
+    background: #E27BEB;
+    color: red;
+    font-size: 40px;
 }

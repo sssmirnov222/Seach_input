@@ -1,24 +1,42 @@
+function debounce  (fn, debounceTime) {
+
+ let times;
+ return function wraper() {
+
+   const deb = () =>  fn.apply(this,arguments)
+
+   clearTimeout(times)
+
+   times = setTimeout(deb,debounceTime)  
+  }
+};
+
+onInput = debounce(onInput,600)
+
 let input = document.querySelector("input");
-input.addEventListener("input", onInput);
+input.addEventListener("keyup", onInput);
 
 let userFetch;
 let data;
 let countUser = [];
-async function getUserName() {
-  userFetch = await fetch("https://api.github.com/repositories?q=Q");
+async function getUserName(value) {
+  userFetch = await fetch(`https://api.github.com/repositories?q=${value}`);
   data = await userFetch.json();
+  console.log(data)
   countUser = data.map((user) => {
     return user.name;
   });
 }
-getUserName();
+
 
 
 
 function onInput() {
   removeAutocomplete();
-
+  
   let value = input.value.toLowerCase();
+
+  getUserName(value);
 
   if (value.length == 0) return;
 
@@ -35,8 +53,10 @@ function onInput() {
 function createAutocomplete(list) {
   let listEL = document.createElement("ul");
   listEL.className = "user_autocomplite";
+  let slice = list.slice(0,5)
 
-  list.forEach((user) => {
+  slice.forEach((user) => {
+    
     let listItem = document.createElement("li");
     listItem.classList.add("user_autocomplite_list");
 
@@ -46,12 +66,17 @@ function createAutocomplete(list) {
 
     listItem.appendChild(button);
     listEL.appendChild(listItem);
-
+    
     listItem.addEventListener("click", listInput);
+    console.log(listItem.length)
+    
   });
 
   let wrapper = document.querySelector("#autocomplete-wrapper");
-  wrapper.appendChild(listEL);
+  
+     wrapper.appendChild(listEL);
+  
+ 
 }
 
 function removeAutocomplete() {
@@ -59,31 +84,52 @@ function removeAutocomplete() {
   if (listEl) listEl.remove();
 }
 
+
+
+
+
 function listInput(e) {
   console.log(e);
-
-  let buttonEl = e.target;
-  input.value = buttonEl.innerHTML;
+ 
+  
+  input.value = "";
   removeAutocomplete();
 
   let div = document.querySelector(".user");
+
   let liName = document.createElement("li");
-  let liID = document.createElement("li");
-  
-
   liName.classList.add("userComplete")
-  liID.classList.add("userComplete")
 
+  let liID = document.createElement("li");
+   liID.classList.add("userComplete")
+
+  let button = document.createElement("button");
+  button.append('✖')
+  button.classList.add("buttonExit")
+  button.addEventListener("click", () => {
+    divFlex.style.display = "none"
+  })
+  
+  let divUser = document.createElement("div")
+  divUser.append(liName,liID)
+
+  let divFlex = document.createElement("div");
+  divFlex.classList.add("divFlex")
+  divFlex.append(divUser,button)
+  
+  
   liName.append("Name:" + " " + e.srcElement.innerText)
-  liName.style.borderTop = "2px solid black"
+  
 
   data.forEach(el => {
     if(el.name == e.srcElement.innerText) {
       liID.append("ID:" + " " + el.id)
-      liID.style.borderBottom = "2px solid black"
     }
   })
- 
-  div.append(liName,liID)
+
+  div.append(divFlex)
   
 }
+
+
+
